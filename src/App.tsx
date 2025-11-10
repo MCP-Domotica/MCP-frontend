@@ -2,10 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { HomeProvider } from './context/HomeContext';
 import { Dashboard } from './components/rooms/Dashboard';
-import { DiningRoom } from './components/rooms/DiningRoom';
-import { BedRoom } from './components/rooms/BedRoom';
-import { BathRoom } from './components/rooms/Bathroom';
-import { LivingRoom } from './components/rooms/LivingRoom';
+import { RoomView } from './components/rooms/RoomView';
 import './App.css';
 
 function App() {
@@ -16,10 +13,7 @@ function App() {
           <div className="container mx-auto px-4 py-8">
             <Routes>
               <Route path="/" element={<Dashboard />} />
-              <Route path="/comedor" element={<DiningRoom />} />
-              <Route path="/dormitorio" element={<BedRoom />} />
-              <Route path="/baño" element={<BathRoom />} />
-              <Route path="/sala" element={<LivingRoom />} />
+              <Route path="/room/:roomName" element={<RoomView />} />
             </Routes>
           </div>
         </div>

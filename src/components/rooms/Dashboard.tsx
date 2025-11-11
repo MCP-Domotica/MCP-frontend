@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Home, Lightbulb, Power, RefreshCw } from 'lucide-react';
+import { Home, Lightbulb, Power, RefreshCw, Thermometer, Wind, Flame } from 'lucide-react';
 import { useHome } from '@/context/HomeContext';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
@@ -134,7 +134,7 @@ export const Dashboard: React.FC = () => {
                   <CardTitle>Estado General del Sistema</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
                     <div className="p-4 bg-blue-50 rounded-lg text-center">
                       <Home className="w-8 h-8 text-blue-600 mx-auto mb-2" />
                       <p className="text-2xl font-bold text-blue-600">
@@ -156,24 +156,26 @@ export const Dashboard: React.FC = () => {
                       </p>
                       <p className="text-sm text-gray-600">Luces</p>
                     </div>
-                    <div className="p-4 bg-purple-50 rounded-lg text-center">
-                      <svg
-                        className="w-8 h-8 text-purple-600 mx-auto mb-2"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-                        />
-                      </svg>
-                      <p className="text-2xl font-bold text-purple-600">
-                        {systemStatus.devices.filter((d) => d.type !== 'light').length}
+                    <div className="p-4 bg-blue-50 rounded-lg text-center">
+                      <Thermometer className="w-8 h-8 text-blue-600 mx-auto mb-2" />
+                      <p className="text-2xl font-bold text-blue-600">
+                        {systemStatus.devices.filter((d) => d.type === 'thermostat').length}
                       </p>
-                      <p className="text-sm text-gray-600">Otros</p>
+                      <p className="text-sm text-gray-600">Termostatos</p>
+                    </div>
+                    <div className="p-4 bg-cyan-50 rounded-lg text-center">
+                      <Wind className="w-8 h-8 text-cyan-600 mx-auto mb-2" />
+                      <p className="text-2xl font-bold text-cyan-600">
+                        {systemStatus.devices.filter((d) => d.type === 'fan').length}
+                      </p>
+                      <p className="text-sm text-gray-600">Ventiladores</p>
+                    </div>
+                    <div className="p-4 bg-red-50 rounded-lg text-center">
+                      <Flame className="w-8 h-8 text-red-600 mx-auto mb-2" />
+                      <p className="text-2xl font-bold text-red-600">
+                        {systemStatus.devices.filter((d) => d.type === 'oven').length}
+                      </p>
+                      <p className="text-sm text-gray-600">Hornos</p>
                     </div>
                   </div>
                 </CardContent>

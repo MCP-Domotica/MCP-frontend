@@ -74,17 +74,39 @@ const DeviceStateDisplay: React.FC<{ device: Device }> = ({ device }) => {
       
       case 'oven':
         const ovenState = device.state as any;
-        const isOn = ovenState?.isOn || ovenState === true;
+        // Soporte para diferentes formatos de estado
+        const isActive = ovenState?.active || ovenState?.isOn || ovenState === true;
+        const ovenTemp = ovenState?.temperature || 180;
+        const ovenTimer = ovenState?.timer || 0;
+        
         return (
-          <div className="flex items-center gap-2">
-            <div
-              className={`w-3 h-3 rounded-full ${
-                isOn ? 'bg-red-500 shadow-lg shadow-red-500/50' : 'bg-gray-300'
-              }`}
-            />
-            <span className={isOn ? 'text-red-600 font-medium' : 'text-gray-500'}>
-              {isOn ? `${ovenState?.temperature || 180}°C` : 'Apagado'}
-            </span>
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <div
+                className={`w-3 h-3 rounded-full ${
+                  isActive ? 'bg-red-500 shadow-lg shadow-red-500/50' : 'bg-gray-300'
+                }`}
+              />
+              <span className={isActive ? 'text-red-600 font-medium' : 'text-gray-500'}>
+                {isActive ? 'Encendido' : 'Apagado'}
+              </span>
+            </div>
+            {isActive && (
+              <div className="ml-5 space-y-1 text-sm">
+                <div className="flex items-center gap-2 text-red-600">
+                  <Thermometer className="w-3 h-3" />
+                  <span>{ovenTemp}°C</span>
+                </div>
+                {ovenTimer > 0 && (
+                  <div className="flex items-center gap-2 text-orange-600">
+                    <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span>{ovenTimer} min</span>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         );
       
@@ -252,27 +274,29 @@ export const RoomView: React.FC = () => {
             <CardTitle>Resumen de la Habitación</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className={`grid grid-cols-2 ${roomData.type.toLowerCase() === 'cocina' || roomData.type.toLowerCase() === 'kitchen' ? 'md:grid-cols-4' : 'md:grid-cols-3'} gap-4`}>
               <div className="text-center p-3 bg-yellow-50 rounded-lg">
                 <Lightbulb className="w-6 h-6 text-yellow-600 mx-auto mb-1" />
-                <p className="text-xl font-bold text-yellow-600">{roomData.light_count}</p>
+                <p className="text-xl font-bold text-yellow-600">{roomData.light_count || 0}</p>
                 <p className="text-xs text-gray-600">Luces</p>
               </div>
               <div className="text-center p-3 bg-blue-50 rounded-lg">
                 <Thermometer className="w-6 h-6 text-blue-600 mx-auto mb-1" />
-                <p className="text-xl font-bold text-blue-600">{roomData.thermostat_count}</p>
+                <p className="text-xl font-bold text-blue-600">{roomData.thermostat_count || 0}</p>
                 <p className="text-xs text-gray-600">Termostatos</p>
               </div>
               <div className="text-center p-3 bg-cyan-50 rounded-lg">
                 <Wind className="w-6 h-6 text-cyan-600 mx-auto mb-1" />
-                <p className="text-xl font-bold text-cyan-600">{roomData.fan_count}</p>
+                <p className="text-xl font-bold text-cyan-600">{roomData.fan_count || 0}</p>
                 <p className="text-xs text-gray-600">Ventiladores</p>
               </div>
-              <div className="text-center p-3 bg-red-50 rounded-lg">
-                <Flame className="w-6 h-6 text-red-600 mx-auto mb-1" />
-                <p className="text-xl font-bold text-red-600">{roomData.oven_count}</p>
-                <p className="text-xs text-gray-600">Hornos</p>
-              </div>
+              {(roomData.type.toLowerCase() === 'cocina' || roomData.type.toLowerCase() === 'kitchen') && (
+                <div className="text-center p-3 bg-red-50 rounded-lg">
+                  <Flame className="w-6 h-6 text-red-600 mx-auto mb-1" />
+                  <p className="text-xl font-bold text-red-600">{roomData.oven_count || 0}</p>
+                  <p className="text-xs text-gray-600">Hornos</p>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>

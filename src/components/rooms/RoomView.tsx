@@ -117,12 +117,17 @@ export const RoomView: React.FC = () => {
   const { fetchRoomDetails } = useHome();
   const [roomData, setRoomData] = useState<RoomDetail | null>(null);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const loadRoomData = async () => {
+  const loadRoomData = async (isInitialLoad = false) => {
     if (!roomName) return;
     
-    setLoading(true);
+    if (isInitialLoad) {
+      setLoading(true);
+    } else {
+      setRefreshing(true);
+    }
     setError(null);
     
     try {
@@ -135,20 +140,24 @@ export const RoomView: React.FC = () => {
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error al cargar la habitación');
     } finally {
-      setLoading(false);
+      if (isInitialLoad) {
+        setLoading(false);
+      } else {
+        setRefreshing(false);
+      }
     }
   };
 
   useEffect(() => {
-    loadRoomData();
+    loadRoomData(true);
   }, [roomName]);
 
   const handleRefresh = async () => {
-    await loadRoomData();
+    await loadRoomData(false);
   };
 
   const handleChatAction = async () => {
-    await handleRefresh();
+    await loadRoomData(false);
   };
 
   if (loading) {
@@ -196,8 +205,8 @@ export const RoomView: React.FC = () => {
               </p>
             </div>
           </div>
-          <Button onClick={handleRefresh} variant="outline" disabled={loading}>
-            <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+          <Button onClick={handleRefresh} variant="outline" disabled={refreshing}>
+            <RefreshCw className={`w-4 h-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
             Actualizar
           </Button>
         </div>
